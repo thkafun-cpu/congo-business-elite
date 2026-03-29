@@ -1,0 +1,5 @@
+streamlit
+langchain-groq
+supabase
+requests
+duckduckgo-search
