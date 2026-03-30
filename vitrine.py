@@ -1,62 +1,82 @@
 import streamlit as st
 import streamlit.components.v1 as components
-import json
 
-def afficher_vitrine(entreprises, actualites):
-    # Transformation des données en JSON pour JavaScript
-    businesses_json = json.dumps(entreprises)
-    logo_url = "https://githubusercontent.com"
+def afficher_navigation():
+    """Barre de navigation latérale style Dashboard Elite"""
+    st.sidebar.image("https://githubusercontent.com", width=100)
+    st.sidebar.title("BGM Elite")
+    st.sidebar.markdown("---")
+    
+    menu = st.sidebar.radio(
+        "Navigation",
+        ["🏠 Accueil & Vision", "🏭 L'Usine à Business (IA)", "marketplace Annuaire PME", "📅 Événements & Blog"],
+        index=0
+    )
+    
+    st.sidebar.markdown("---")
+    st.sidebar.info("🚀 **Mode Basse Bande Passante** activé par défaut pour la RDC.")
+    
+    return menu
 
-    # NOTE : Pas de 'f' devant les guillemets ici pour éviter la SyntaxError des f-strings
-    html_code = """
-    <div id="root"></div>
+def rendu_accueil():
+    """Service Vitrine : Branding & Vision"""
+    html_hero = """
     <script src="https://tailwindcss.com"></script>
-    <script src="https://unpkg.com"></script>
-    <script src="https://unpkg.com"></script>
-    <script src="https://unpkg.com"></script>
-
-    <script type="text/babel">
-        const App = () => {
-            const businesses = VAR_BUSINESSES;
-            return (
-                <div className="min-h-screen bg-slate-50 p-6 md:p-12 font-sans">
-                    <nav className="flex justify-between items-center mb-12 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                        <div className="flex items-center gap-4">
-                            <img src="VAR_LOGO_URL" className="h-12 w-12 rounded-xl object-cover" />
-                            <h1 className="font-black text-emerald-900 uppercase tracking-tighter">Congo Business Elite</h1>
-                        </div>
-                    </nav>
-
-                    <div className="max-w-7xl mx-auto">
-                        <h2 className="text-3xl font-bold text-emerald-950 mb-8 border-l-8 border-amber-500 pl-4 uppercase tracking-widest">
-                            L'Élite Économique
-                        </h2>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {businesses.map(b => (
-                                <div key={b.id} className="bg-white rounded-[2rem] overflow-hidden shadow-xl border border-emerald-50 p-4 transition-transform hover:-translate-y-2">
-                                    <img src={b.image} className="h-56 w-full object-cover rounded-[1.5rem] mb-6 shadow-md" />
-                                    <div className="px-2 pb-4">
-                                        <span className="text-[10px] font-black text-amber-600 uppercase tracking-[0.2em]">{b.category}</span>
-                                        <h3 className="font-bold text-emerald-950 text-2xl mt-1">{b.name}</h3>
-                                        <p className="text-slate-400 font-medium text-sm mt-3 flex items-center gap-2">
-                                            <span className="h-1 w-1 bg-slate-300 rounded-full"></span> {b.location}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            );
-        };
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<App />);
-    </script>
+    <div class="bg-emerald-950 p-10 rounded-3xl text-white mb-10 border-l-8 border-amber-500 shadow-2xl">
+        <span class="text-amber-400 font-bold uppercase tracking-widest text-xs">Vision RDC 2030</span>
+        <h1 class="text-4xl md:text-6xl font-black mt-4 leading-tight">Congo Business Elite</h1>
+        <p className="text-emerald-100/80 mt-6 text-lg italic">
+            "Le numérique au service du miracle économique congolais." 
+            <br>— <b>Badiata Grâce Magaly (BGM)</b>
+        </p>
+    </div>
     """
+    components.html(html_hero, height=350)
     
-    # Injection sécurisée des données sans f-strings
-    html_code = html_code.replace("VAR_BUSINESSES", businesses_json).replace("VAR_LOGO_URL", logo_url)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.subheader("🎯 Notre Mission")
+        st.write("Connecter les leaders des TPE/PME au marché africain via l'IA et l'automatisation.")
+    with col2:
+        st.subheader("📊 Impact en Direct")
+        st.metric(label="PME Accompagnées", value="124", delta="+12 ce mois")
+
+def rendu_usine_ia():
+    """Service Intelligence : Outils IA"""
+    st.title("🏭 L'Usine à Business")
+    st.caption("Outils d'IA générative pour booster votre structure.")
     
-    components.html(html_code, height=1500, scrolling=True)
+    tab1, tab2, tab3 = st.tabs(["⚖️ Assistant OHADA", "📝 Générateur de Pitch", "🔍 Diagnostic Digital"])
+    
+    with tab1:
+        st.info("Posez vos questions juridiques sur la création d'entreprise en RDC.")
+        # Ici on appellera le futur Microservice Intelligence
+        st.text_input("Votre question (ex: Quel statut pour une SARL ?)")
+        
+    with tab2:
+        st.write("Structurez votre recherche de financement en 2 minutes.")
+        st.button("Générer mon Pitch")
+
+def rendu_annuaire():
+    """Service Marketplace : Visibilité"""
+    st.title("🤝 Marketplace de Visibilité")
+    st.write("Faites la promotion de votre savoir-faire.")
+    # Logique de récupération des données Supabase à venir
+    st.warning("Connectez-vous à Supabase pour voir l'annuaire dynamique.")
+
+def afficher_vitrine():
+    """Point d'entrée principal du service Vitrine"""
+    choix = afficher_navigation()
+    
+    if choix == "🏠 Accueil & Vision":
+        rendu_accueil()
+    elif choix == "🏭 L'Usine à Business (IA)":
+        rendu_usine_ia()
+    elif choix == "marketplace Annuaire PME":
+        rendu_annuaire()
+    else:
+        st.title("📅 Événements & Blog")
+        st.write("Contenu en cours de rédaction...")
+
+if __name__ == "__main__":
+    afficher_vitrine()
